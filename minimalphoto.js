@@ -8,9 +8,27 @@ function preload() {
   im = loadImage("image/colorful_flowers_11.jpg");
 }
 
+function draw_unit(x, y, d, type) {
+  //https://en.wikipedia.org/wiki/Norm_(mathematics)
+  switch (type) {
+    case "manhattan" : 
+      push();
+      translate(x, y);
+      rotate(QUARTER_PI);
+      rect(0, 0, d, d);
+      pop();
+      break;
+    case "tchebychev":
+      rect(x, y, d, d);
+    case "euclidian" :
+    default :
+      ellipse(x, y, d, d);
+  }
+}
+
 function* iterdraw(im) {
 
-  // Voronoi way with trick less performance easiest to write
+  // Voronoi way with trick : less performance easiest to write
   
   rectMode(CENTER);
   var npoints = hdens * wdens;
@@ -40,8 +58,9 @@ function* iterdraw(im) {
   for (var d = m;d > 0; d-=prec) {
     for(let p of points) {
       fill(p.color.r, p.color.g, p.color.b, p.color.a);
-      ellipse(p.x, p.y, d, d);
-      //rect(p.x, p.y, d, d);
+      // manhattan or euclidian or tchebychev
+      draw_unit(p.x, p.y, d, "manhattan")
+
     }
     yield i/d;
   }
@@ -63,5 +82,5 @@ clik add trgl/remove trgl (up/reduce detail)
 */
 
 function draw() {
-  //iterator.next();
+  iterator.next();
 }
